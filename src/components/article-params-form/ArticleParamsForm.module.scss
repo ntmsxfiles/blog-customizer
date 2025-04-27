@@ -3,7 +3,7 @@
 	left: 0;
 	width: 616px;
 	height: 100%;
-	overflow: scroll;
+	overflow: auto;
 	transform: translate(-616px);
 	transition: transform 0.5s ease;
 }
@@ -17,6 +17,7 @@
 	flex-shrink: 0;
 	flex-direction: column;
 	box-sizing: border-box;
+	row-gap: 50px;
 	width: 616px;
 	height: auto;
 	min-height: 100%;
