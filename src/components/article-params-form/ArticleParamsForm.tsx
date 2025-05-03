@@ -14,18 +14,21 @@ import {
   fontColors,
   fontFamilyOptions,
   fontSizeOptions,
+  type ArticleStateType,
 } from 'src/constants/articleProps';
 
 type ArticleParamsFormProps = {
-  onSettingsChange: (formState: typeof defaultArticleState) => void;
+  onSettingsChange: (formState: ArticleStateType) => void;
   title?: string;
 };
+
+type FormState = ArticleStateType & { isOpen: boolean };
 
 export const ArticleParamsForm = ({
   onSettingsChange,
   title = 'Задайте параметры',
 }: ArticleParamsFormProps) => {
-  const [formState, setFormState] = useState({
+  const [formState, setFormState] = useState<FormState>({
     ...defaultArticleState,
     isOpen: false,
   });

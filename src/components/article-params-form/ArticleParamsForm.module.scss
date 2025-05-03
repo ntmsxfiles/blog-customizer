@@ -1,13 +1,15 @@
 .container {
 	position: fixed;
 	left: 0;
+	top: 0;
 	width: 616px;
 	height: 100%;
 	overflow-y: auto;
-	transform: translateX(-616px);
-	transition: transform 0.5s ease;
 	background-color: #ffffff;
 	border-right: 1px solid #000000;
+	transform: translateX(-616px);
+	transition: transform 0.5s ease;
+	z-index: 10;
   }
 
   .container_open {
@@ -17,11 +19,11 @@
   .form {
 	display: flex;
 	flex-direction: column;
+	box-sizing: border-box;
 	width: 100%;
 	min-height: 100%;
 	padding: 50px 31px;
-	box-sizing: border-box;
-	gap: 30px;
+	gap: 30px; 
   }
 
   .title {
@@ -31,6 +33,6 @@
   .bottomContainer {
 	display: flex;
 	justify-content: space-between;
-	gap: 12px;
-	margin-top: 40px;
+	margin-top: auto;
+	gap: 16px;
   }
