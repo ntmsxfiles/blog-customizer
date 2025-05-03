@@ -20,18 +20,15 @@ import {
 type ArticleParamsFormProps = {
 	onSettingsChange: (formState: ArticleStateType) => void;
 	title?: string;
-	isOpen: boolean;
-	setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const ArticleParamsForm = ({
 	onSettingsChange,
 	title = 'Задайте параметры',
-	isOpen,
-	setIsOpen,
 }: ArticleParamsFormProps) => {
 	const [formState, setFormState] =
 		useState<ArticleStateType>(defaultArticleState);
+	const [isOpen, setIsOpen] = useState(false);
 	const placeholderRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -46,7 +43,7 @@ export const ArticleParamsForm = ({
 
 		document.addEventListener('click', handleClickOutside, { capture: true });
 		return () => document.removeEventListener('click', handleClickOutside);
-	}, [isOpen, setIsOpen]);
+	}, [isOpen]);
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -68,11 +65,9 @@ export const ArticleParamsForm = ({
 					[styles.container_open]: isOpen,
 				})}>
 				<form className={styles.form} onSubmit={handleSubmit}>
-					<div className={styles.title}>
-						<Text as='h2' size={22} weight={800} uppercase>
-							{title}
-						</Text>
-					</div>
+					<Text as='h2' size={31} weight={800} uppercase>
+						{title}
+					</Text>
 
 					<Select
 						title='Шрифт'

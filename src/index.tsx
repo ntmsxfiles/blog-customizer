@@ -16,7 +16,6 @@ const root = createRoot(domNode);
 const App = () => {
 	const [layoutConfig, updateLayoutConfig] =
 		useState<ArticleStateType>(defaultArticleState);
-	const [isOpen, setIsOpen] = useState(false);
 
 	return (
 		<main
@@ -30,11 +29,7 @@ const App = () => {
 					'--bg-color': layoutConfig.backgroundColor.value,
 				} as CSSProperties
 			}>
-			<ArticleParamsForm
-				onSettingsChange={updateLayoutConfig}
-				isOpen={isOpen}
-				setIsOpen={setIsOpen}
-			/>
+			<ArticleParamsForm onSettingsChange={updateLayoutConfig} />
 			<Article />
 		</main>
 	);
