@@ -1,12 +1,12 @@
+import { useEffect, useRef, useState } from 'react';
+import clsx from 'clsx';
 import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
-import { useEffect, useRef, useState } from 'react';
-import styles from './ArticleParamsForm.module.scss';
 import { RadioGroup } from 'src/ui/radio-group';
 import { Text } from 'src/ui/text';
 import { Select } from 'src/ui/select';
 import { Separator } from 'src/ui/separator';
-import clsx from 'clsx';
+import styles from './ArticleParamsForm.module.scss';
 import {
   backgroundColors,
   contentWidthArr,
@@ -16,144 +16,142 @@ import {
   fontSizeOptions,
 } from 'src/constants/articleProps';
 
-const defaultParams = {
-    fontFamilyOption: defaultArticleState.fontFamilyOption,
-    fontSizeOption: defaultArticleState.fontSizeOption,
-    fontColor: defaultArticleState.fontColor,
-    backgroundColor: defaultArticleState.backgroundColor,
-    contentWidth: defaultArticleState.contentWidth,
-  };
+type ArticleParamsFormProps = {
+  onSettingsChange: (formState: typeof defaultArticleState) => void;
+  title?: string;
+};
 
-  export const ArticleParamsForm = ({
-    onSettingsChange,
-  }: {
-    onSettingsChange: (formState: typeof defaultParams) => void;
-  }) => {
-    const [uiSettings, setUiSettings] = useState({ ...defaultParams, isOpen: false });
-    const placeholderRef = useRef<HTMLDivElement>(null);
+export const ArticleParamsForm = ({
+  onSettingsChange,
+  title = 'Задайте параметры',
+}: ArticleParamsFormProps) => {
+  const [formState, setFormState] = useState({
+    ...defaultArticleState,
+    isOpen: false,
+  });
 
-    const handleSubmit = (e: React.FormEvent) => {
-      e.preventDefault();
-      onSettingsChange({
-        fontFamilyOption: uiSettings.fontFamilyOption,
-        fontSizeOption: uiSettings.fontSizeOption,
-        fontColor: uiSettings.fontColor,
-        backgroundColor: uiSettings.backgroundColor,
-        contentWidth: uiSettings.contentWidth,
-      });
-      setUiSettings((prev) => ({ ...prev, isOpen: false }));
+  const placeholderRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!formState.isOpen) return;
+
+    const handleClickOutside = (e: Event) => {
+      if (!placeholderRef.current || !(e.target instanceof HTMLElement)) return;
+      if (!placeholderRef.current.contains(e.target)) {
+        setFormState((prev) => ({ ...prev, isOpen: false }));
+      }
     };
-
-    const handleClear = () => {
-      setUiSettings((prev) => ({
-        ...defaultParams,
-        isOpen: prev.isOpen,
-      }));
-      onSettingsChange(defaultArticleState);
-    };
-
-  const handleClickOutside = (e: Event) => {
-    if (!placeholderRef.current || !(e.target instanceof HTMLElement)) return;
-    if (!placeholderRef.current.contains(e.target)) {
-      setUiSettings((prev) => ({ ...prev, isOpen: false }));
-    }
-  };
-
-  const setupOutsideClickListener = () => {
-    if (!uiSettings.isOpen) return;
 
     document.addEventListener('click', handleClickOutside, { capture: true });
     return () => document.removeEventListener('click', handleClickOutside);
+  }, [formState.isOpen]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const {
+      fontFamilyOption,
+      fontSizeOption,
+      fontColor,
+      backgroundColor,
+      contentWidth,
+    } = formState;
+
+    onSettingsChange({
+      fontFamilyOption,
+      fontSizeOption,
+      fontColor,
+      backgroundColor,
+      contentWidth,
+    });
+
+    setFormState((prev) => ({ ...prev, isOpen: false }));
   };
 
-  useEffect(setupOutsideClickListener, [uiSettings.isOpen]);
+  const handleClear = () => {
+    setFormState((prev) => ({
+      ...defaultArticleState,
+      isOpen: prev.isOpen,
+    }));
+
+    onSettingsChange(defaultArticleState);
+  };
 
   return (
     <div ref={placeholderRef}>
       <ArrowButton
-        isOpen={uiSettings.isOpen}
+        isOpen={formState.isOpen}
         onClick={() =>
-          setUiSettings((prev) => ({ ...prev, isOpen: !prev.isOpen }))
+          setFormState((prev) => ({ ...prev, isOpen: !prev.isOpen }))
         }
       />
 
       <aside
         className={clsx(styles.container, {
-          [styles.container_open]: uiSettings.isOpen,
-        })}>
+          [styles.container_open]: formState.isOpen,
+        })}
+      >
         <form className={styles.form} onSubmit={handleSubmit}>
-          <div className={styles.bottomContainer}>
-            <Button
-              title="Сбросить"
-              htmlType="reset"
-              type="clear"
-              onClick={handleClear}
-            />
-            <Button
-              title="Применить"
-              htmlType="submit"
-              type="apply"
-            />
-          </div>
-
-          <div style={{ marginBottom: '30px' }}>
+          <h2 className={styles.title}>
             <Text size={22} weight={800} uppercase>
-              Задайте параметры
+              {title}
             </Text>
-          </div>
+          </h2>
 
-          <div style={{ marginBottom: '30px' }}>
-            <Select
-              title="Шрифт"
-              options={fontFamilyOptions}
-              selected={uiSettings.fontFamilyOption}
-              onChange={(value) => setUiSettings({ ...uiSettings, fontFamilyOption: value })}
-            />
-          </div>
+          <Select
+            title="Шрифт"
+            options={fontFamilyOptions}
+            selected={formState.fontFamilyOption}
+            onChange={(value) =>
+              setFormState({ ...formState, fontFamilyOption: value })
+            }
+          />
 
-          <div style={{ marginBottom: '30px' }}>
-            <RadioGroup
-              title="Размер шрифта"
-              name="fontSize"
-              options={fontSizeOptions}
-              selected={uiSettings.fontSizeOption}
-              onChange={(value) => setUiSettings({ ...uiSettings, fontSizeOption: value })}
-            />
-          </div>
+          <RadioGroup
+            title="Размер шрифта"
+            name="fontSize"
+            options={fontSizeOptions}
+            selected={formState.fontSizeOption}
+            onChange={(value) =>
+              setFormState({ ...formState, fontSizeOption: value })
+            }
+          />
 
-          <div style={{ marginBottom: '30px' }}>
-            <Select
-              title="Цвет шрифта"
-              options={fontColors}
-              selected={uiSettings.fontColor}
-              onChange={(value) => setUiSettings({ ...uiSettings, fontColor: value })}
-            />
-          </div>
+          <Select
+            title="Цвет шрифта"
+            options={fontColors}
+            selected={formState.fontColor}
+            onChange={(value) =>
+              setFormState({ ...formState, fontColor: value })
+            }
+          />
 
-          <div style={{ marginBottom: '30px' }}>
-            <Separator />
-          </div>
+          <Separator />
 
-          <div style={{ marginBottom: '30px' }}>
-            <Select
-              title="Цвет фона"
-              options={backgroundColors}
-              selected={uiSettings.backgroundColor}
-              onChange={(value) => setUiSettings({ ...uiSettings, backgroundColor: value })}
-            />
-          </div>
+          <Select
+            title="Цвет фона"
+            options={backgroundColors}
+            selected={formState.backgroundColor}
+            onChange={(value) =>
+              setFormState({ ...formState, backgroundColor: value })
+            }
+          />
 
-          <div style={{ marginBottom: '30px' }}>
-            <Select
-              title="Ширина контента"
-              options={contentWidthArr}
-              selected={uiSettings.contentWidth}
-              onChange={(value) => setUiSettings({ ...uiSettings, contentWidth: value })}
-            />
+          <Select
+            title="Ширина контента"
+            options={contentWidthArr}
+            selected={formState.contentWidth}
+            onChange={(value) =>
+              setFormState({ ...formState, contentWidth: value })
+            }
+          />
+
+          <div className={styles.bottomContainer}>
+            <Button title="Сбросить" htmlType="reset" type="clear" onClick={handleClear} />
+            <Button title="Применить" htmlType="submit" type="apply" />
           </div>
         </form>
       </aside>
     </div>
   );
 };
-
