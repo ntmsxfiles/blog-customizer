@@ -1,7 +1,8 @@
 .container {
 	position: fixed;
-	left: 0;
 	top: 0;
+	left: 0;
+	z-index: 10;
 	width: 616px;
 	height: 100%;
 	overflow-y: auto;
@@ -9,30 +10,29 @@
 	border-right: 1px solid #000000;
 	transform: translateX(-616px);
 	transition: transform 0.5s ease;
-	z-index: 10;
-  }
+}
 
-  .container_open {
+.container_open {
 	transform: translateX(0);
-  }
+}
 
-  .form {
+.form {
 	display: flex;
 	flex-direction: column;
+	gap: 30px;
 	box-sizing: border-box;
 	width: 100%;
 	min-height: 100%;
 	padding: 50px 31px;
-	gap: 30px; 
-  }
+}
 
-  .title {
+.title {
 	margin: 0;
-  }
+}
 
-  .bottomContainer {
+.bottomContainer {
 	display: flex;
 	justify-content: space-between;
-	margin-top: auto;
 	gap: 16px;
-  }
+	margin-top: auto;
+}
